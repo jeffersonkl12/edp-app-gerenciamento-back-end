@@ -5,18 +5,23 @@
   "main": "index.ts",
   "scripts": {
     "dev": "dotenvx run -f .dev.env -- ts-node ./src/index.ts ",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.11",
+    "jest": "^29.7.0",
     "prettier": "3.3.3",
+    "ts-jest": "^29.2.2",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.3",
     "typescript": "^5.5.3"
