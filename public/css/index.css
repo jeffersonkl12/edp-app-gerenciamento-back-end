@@ -1,0 +1,55 @@
+@import url(./reset.css);
+@import url(./theme.css);
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: var(--secundary-color-blue);
+
+  padding: var(--spacing-xl);
+}
+header {
+  background-color: var(--primary-color-blue);
+
+  padding: 10px;
+}
+.header__logo {
+  width: 70px;
+  height: 70px;
+}
+
+.titulo {
+  font-size: 2rem;
+  text-align: center;
+
+  color: var(--primary-color-green);
+
+  margin-top: var(--spacing-md);
+}
+
+.apresentacao {
+  font-size: 1.1rem;
+}
+
+.apresentacao > * {
+  margin-top: var(--spacing-md);
+}
+
+.apresentacao__subinfo {
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.divider {
+  height: 1px;
+
+  background-color: var(--secundary-color-blue);
+
+  border-radius: 10px;
+
+  margin-top: var(--spacing-xl);
+}
+
+.container-content {
+  padding-top: var(--spacing-2xl);
+}

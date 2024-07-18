@@ -1,0 +1,8 @@
+:root {
+  --primary-color-blue: #212e3e;
+  --secundary-color-blue: #23496d;
+
+  --spacing-md: 1rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 4rem;
+}
