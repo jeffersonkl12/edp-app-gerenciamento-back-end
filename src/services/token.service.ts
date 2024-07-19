@@ -1,32 +1,30 @@
-import jwt from 'jsonwebtoken'
+import jwt, { TokenExpiredError } from 'jsonwebtoken'
 import fs from 'fs'
 import * as dotenv from 'dotenv'
+import { JWTCONFIG } from '../interfaces/global.interfaces'
 
 dotenv.config()
 
 const PATH_PRIVATE_KEY = process.env.PATH_TO_PRIVATE_KEY || ''
 const PATH_PUBLIC_KEY = process.env.PATH_TO_PUBLIC_KEY || ''
 
-interface JWTCONFIG {
-  expiresIn?: string | number | undefined
-  issuer?: string | undefined
-  jwtid?: string | undefined
-}
-
-export function createToken(config: JWTCONFIG, payload: any) {
-  const encodePayload = JSON.stringify(payload)
-
+export function createToken(config: JWTCONFIG, payload: any = {}) {
   const privateKey = readFileKey(PATH_PRIVATE_KEY)
 
-  return jwt.sign(encodePayload, privateKey, { algorithm: 'RS256' })
+  return jwt.sign(payload, privateKey, {
+    algorithm: 'RS256',
+    issuer: 'api_edp',
+    ...config,
+  })
 }
 
 export function verifyToken(token: string) {
   const publicKey = readFileKey(PATH_PUBLIC_KEY)
   try {
     jwt.verify(token, publicKey, { algorithms: ['RS256'], complete: true })
+    return true
   } catch (err) {
-    throw new Error('Token invalido!')
+    return false
   }
 }
 
@@ -44,7 +42,7 @@ function verifyKeysIntegridate() {
   throw new Error('Chaves RSA invalidas ou nao encontradas!')
 }
 
-function readFileKey(path: string) {
+export function readFileKey(path: string) {
   verifyKeysIntegridate()
   return fs.readFileSync(path, { encoding: 'utf-8' })
 }

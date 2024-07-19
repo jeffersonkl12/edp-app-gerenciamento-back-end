@@ -11,14 +11,12 @@ const USERNAME = process.env.SMTP_USERNAME || ''
 const PASSWORD = process.env.SMTP_PASSWORD || ''
 
 interface PropsSendEmail {
-  remetente: string
   destinatario: string
   titulo?: string
   conteudo?: string
 }
 
 export async function sendEmail({
-  remetente,
   destinatario,
   titulo,
   conteudo,
@@ -31,7 +29,7 @@ export async function sendEmail({
     )
 
     const info = await transport.sendMail({
-      from: remetente,
+      from: HOST,
       to: destinatario,
       subject: titulo,
       text: conteudo,
