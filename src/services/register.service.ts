@@ -6,10 +6,10 @@ import {
   UserCredential,
 } from '../interfaces/global.interfaces'
 import { existByEmail, save } from '../repositorys/userDetails.repository'
-import { v7 as uuidV7 } from 'uuid'
 import { sendEmail } from './email.service'
 import * as dotenv from 'dotenv'
 import { createToken } from './token.service'
+import { hash } from '../utils/has.utils'
 
 dotenv.config()
 
@@ -27,7 +27,7 @@ export async function registerUser(userCredential: UserCredential) {
 
   const userDetailsRegisterDTO = new UserDetailsRegisterDTO(
     email,
-    password,
+    hash(password),
     nome,
   )
   try {

@@ -1,3 +1,4 @@
+import { UserDetails } from '@prisma/client'
 import { JwtPayload, SignOptions } from 'jsonwebtoken'
 
 export interface UserCredential {
@@ -24,4 +25,10 @@ export enum TYPETOKEN {
 export enum TYPESTATUSUSER {
   DISABLED,
   ACTIVATE,
+}
+
+export interface ResponseUserCredential {
+  userDetails: UserDetails
+  token: string
+  tokenRefresh: string
 }
