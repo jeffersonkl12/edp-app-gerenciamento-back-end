@@ -17,16 +17,17 @@ router.post(
 
     const result = validationResult(req)
 
-    try {
-      if (result.isEmpty()) {
+    if (result.isEmpty()) {
+      try {
         const response = await registerUser(userCredential)
-        return res.status(201).json('Cadastro realizado com sucesso!')
-      }
 
-      return res.status(400).json(result.array())
-    } catch (err) {
-      next(err)
+        return res.status(201).json('Cadastro realizado com sucesso!')
+      } catch (err) {
+        next(err)
+      }
     }
+
+    return res.status(400).json(result.array())
   },
 )
 

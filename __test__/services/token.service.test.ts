@@ -1,4 +1,4 @@
-import { JWTCONFIG } from '../../src/interfaces/global.interfaces'
+import { JWTBody, JWTConfig } from '../../src/interfaces/global.interfaces'
 import { v7 as uuidV7 } from 'uuid'
 import {
   createToken,
@@ -9,44 +9,46 @@ import * as tokenService from '../../src/services/token.service'
 
 describe('Teste de servico token', () => {
   test('Teste de criacao de token - valido', () => {
-    const tokenConfig: JWTCONFIG = {
+    const tokenBody: JWTBody = {
       jwtid: uuidV7(),
       subject: 'teste_criacao',
       audience: 'eu',
       expiresIn: '60s',
+      email: 'jeffersonkl99@gmail.com',
     }
 
     jest.spyOn(tokenService, 'readFileKey').mockReturnValue('senha1234')
 
-    expect(
-      createToken(tokenConfig, { email: 'jeffersonkl99@gmail.com' }),
-    ).not.toBeNull()
+    expect(createToken(tokenBody)).not.toBeNull()
   })
 
   test('Teste de verificacao do token - valido', () => {
-    const tokenConfig: JWTCONFIG = {
+    const tokenBody: JWTBody = {
       jwtid: uuidV7(),
       subject: 'teste_criacao',
       audience: 'eu',
       expiresIn: '60s',
+      email: 'jeffersonkl99@gmail.com',
     }
+    const token = createToken(tokenBody)
 
-    const token = createToken(tokenConfig)
-
-    expect(verifyToken(token)).toEqual(true)
+    expect(() => verifyToken(token)).not.toThrow()
   })
 
   test(
     'Test de verificacao do token - invalido',
     async () => {
-      const tokenConfig: JWTCONFIG = {
-        jwtid: uuidV7(),
+      const tokenBody: JWTBody = {
+        email: 'jeffersonkl99@gmail.com',
+      }
+
+      const tokenConfig: JWTConfig = {
         subject: 'teste_criacao',
         audience: 'eu',
         expiresIn: '1s',
       }
 
-      const token = createToken(tokenConfig)
+      const token = createToken(tokenBody, tokenConfig)
 
       const timeout = (ms: number) => {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -54,19 +56,20 @@ describe('Teste de servico token', () => {
 
       await timeout(1000 * 5)
 
-      expect(verifyToken(token)).toEqual(false)
+      expect(() => verifyToken(token)).toThrow()
     },
     1000 * 10,
   )
   test('Teste de decodificacao do token - valido', () => {
-    const tokenConfig: JWTCONFIG = {
+    const tokenBody: JWTBody = {
       jwtid: uuidV7(),
       subject: 'teste_criacao',
       audience: 'eu',
       expiresIn: '60s',
+      email: 'jeffersonkl99@gmail.com',
     }
 
-    const token = createToken(tokenConfig)
+    const token = createToken(tokenBody)
 
     expect(decodeToken(token)).not.toBeNull()
   })

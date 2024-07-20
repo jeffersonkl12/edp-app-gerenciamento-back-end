@@ -1,4 +1,4 @@
-import UserDetailsRegisterDTO from '../../src/dtos/userDetails/userDetails.dto'
+import UserDetailsRegisterDTO from '../../src/dtos/userDetails/UserDetailsRegister.dto'
 import { v7 as uuidV7 } from 'uuid'
 import { registerUser } from '../../src/services/register.service'
 

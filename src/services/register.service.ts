@@ -1,5 +1,10 @@
-import UserDetailsRegisterDTO from '../dtos/userDetails/userDetails.dto'
-import { JWTCONFIG, UserCredential } from '../interfaces/global.interfaces'
+import UserDetailsRegisterDTO from '../dtos/userDetails/UserDetailsRegister.dto'
+import {
+  JWTBody,
+  JWTConfig,
+  TYPETOKEN,
+  UserCredential,
+} from '../interfaces/global.interfaces'
 import { existByEmail, save } from '../repositorys/userDetails.repository'
 import { v7 as uuidV7 } from 'uuid'
 import { sendEmail } from './email.service'
@@ -28,17 +33,18 @@ export async function registerUser(userCredential: UserCredential) {
   try {
     const userDetails = await save(userDetailsRegisterDTO)
 
-    const tokenConfig: JWTCONFIG = {
-      jwtid: uuidV7(),
+    const tokenBody: JWTBody = {
+      email: userDetails.email,
+      type: TYPETOKEN.ACTIVATION,
+    }
+
+    const tokenConfig: JWTConfig = {
       audience: userDetails.id,
       subject: 'activation account',
       expiresIn: '1d',
     }
 
-    const token = createToken(tokenConfig, {
-      email: userDetails.email,
-      type: 'activation',
-    })
+    const token = createToken(tokenBody, tokenConfig)
 
     const url = URL_ACTIVATION.replace('{{userId}}', userDetails.id).replace(
       '{{token}}',

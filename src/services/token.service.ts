@@ -1,20 +1,25 @@
 import jwt, { TokenExpiredError } from 'jsonwebtoken'
 import fs from 'fs'
 import * as dotenv from 'dotenv'
-import { JWTCONFIG } from '../interfaces/global.interfaces'
+import { JWTBody, JWTConfig, TYPETOKEN } from '../interfaces/global.interfaces'
+import { v7 as uuidV7 } from 'uuid'
 
 dotenv.config()
 
 const PATH_PRIVATE_KEY = process.env.PATH_TO_PRIVATE_KEY || ''
 const PATH_PUBLIC_KEY = process.env.PATH_TO_PUBLIC_KEY || ''
 
-export function createToken(config: JWTCONFIG, payload: any = {}) {
+export function createToken(
+  payload: JWTBody = { type: TYPETOKEN.ACTIVATION },
+  JWTConfig?: JWTConfig,
+) {
   const privateKey = readFileKey(PATH_PRIVATE_KEY)
 
   return jwt.sign(payload, privateKey, {
     algorithm: 'RS256',
     issuer: 'api_edp',
-    ...config,
+    jwtid: uuidV7(),
+    ...JWTConfig,
   })
 }
 
@@ -22,9 +27,11 @@ export function verifyToken(token: string) {
   const publicKey = readFileKey(PATH_PUBLIC_KEY)
   try {
     jwt.verify(token, publicKey, { algorithms: ['RS256'], complete: true })
-    return true
   } catch (err) {
-    return false
+    if (err instanceof TokenExpiredError) {
+      throw new Error('Token expirado!')
+    }
+    throw err
   }
 }
 

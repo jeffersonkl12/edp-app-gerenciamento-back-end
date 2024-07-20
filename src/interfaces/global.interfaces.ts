@@ -1,12 +1,27 @@
+import { JwtPayload, SignOptions } from 'jsonwebtoken'
+
 export interface UserCredential {
   nome?: string
   email: string
   password: string
 }
 
-export interface JWTCONFIG {
-  expiresIn?: string | number | undefined
-  subject?: string | undefined
-  audience?: string | string[] | undefined
-  jwtid?: string | undefined
+export interface JWTBody extends JwtPayload {
+  userId?: string | null
+  email?: string | null
+  type?: TYPETOKEN
+}
+
+export interface JWTConfig extends SignOptions {}
+
+export enum TYPETOKEN {
+  ACTIVATION,
+  AUTHENTICATION,
+  RESETTOKEN,
+  REFRESH,
+}
+
+export enum TYPESTATUSUSER {
+  DISABLED,
+  ACTIVATE,
 }
