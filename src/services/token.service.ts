@@ -53,3 +53,21 @@ export function readFileKey(path: string) {
   verifyKeysIntegridate()
   return fs.readFileSync(path, { encoding: 'utf-8' })
 }
+
+export function getFieldToToken(token: string, field: string) {
+  try {
+    const tokenDecode = decodeToken(token)
+
+    if (tokenDecode && tokenDecode.payload) {
+      const tokenPayload = tokenDecode.payload as JWTBody
+
+      if (tokenPayload[field]) {
+        return tokenPayload[field]
+      }
+    }
+
+    return null
+  } catch (err) {
+    throw err
+  }
+}

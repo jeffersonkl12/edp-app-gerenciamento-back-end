@@ -1,7 +1,6 @@
 import prisma from '../databases/configs/prisma.config'
 import userDetailsBaseDTO from '../dtos/userDetails/userDetailsBase.dto'
 import { v7 as uuidv7 } from 'uuid'
-import { hash } from 'crypto'
 
 export async function save(newUserDetails: userDetailsBaseDTO) {
   const uuid = uuidv7()

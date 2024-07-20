@@ -1,9 +1,14 @@
-import { JWTBody, JWTConfig } from '../../src/interfaces/global.interfaces'
+import {
+  JWTBody,
+  JWTConfig,
+  TYPETOKEN,
+} from '../../src/interfaces/global.interfaces'
 import { v7 as uuidV7 } from 'uuid'
 import {
   createToken,
   verifyToken,
   decodeToken,
+  getFieldToToken,
 } from '../../src/services/token.service'
 import * as tokenService from '../../src/services/token.service'
 
@@ -72,5 +77,23 @@ describe('Teste de servico token', () => {
     const token = createToken(tokenBody)
 
     expect(decodeToken(token)).not.toBeNull()
+  })
+
+  test('Testando reucperacao de vlaor de campo especifico', () => {
+    const token = createToken(
+      {
+        email: 'jeffersonkl@gmail.com',
+        type: TYPETOKEN.AUTHENTICATION,
+        userId: '1',
+      },
+      {
+        audience: '1',
+        expiresIn: '1s',
+      },
+    )
+
+    expect(getFieldToToken(token, 'email')).toEqual('jeffersonkl@gmail.com')
+    expect(getFieldToToken(token, 'aud')).toEqual('1')
+    expect(getFieldToToken(token, 'salario')).toBeNull()
   })
 })

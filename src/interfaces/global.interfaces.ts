@@ -10,6 +10,7 @@ export interface UserCredential {
 export interface JWTBody extends JwtPayload {
   userId?: string | null
   email?: string | null
+  tokenRefreshId?: string | null
   type?: TYPETOKEN
 }
 

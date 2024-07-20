@@ -1,6 +1,7 @@
 import userDetailsBaseDTO from '../../src/dtos/userDetails/userDetailsBase.dto'
 import { v7 as uuidV7 } from 'uuid'
 import * as userDetailsRepository from '../../src/repositorys/userDetails.repository'
+import * as tokenService from '../../src/services/token.service'
 import { TYPESTATUSUSER } from '../../src/interfaces/global.interfaces'
 import { UserDetails } from '@prisma/client'
 import { login } from '../../src/services/login.service'
