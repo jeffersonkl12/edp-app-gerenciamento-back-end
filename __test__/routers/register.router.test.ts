@@ -10,7 +10,7 @@ describe('Teste da rota de registro de usuario', () => {
   test('Testando validacao de registro de usuario - valido', async () => {
     const userCrendential: UserCredential = {
       nome: 'jefferson',
-      email: 'jeffersonkl@gmail.com',
+      email: 'jeffersonkl@Edp.com.br',
       password: '123456',
     }
     const response = await request(app)
@@ -36,6 +36,6 @@ describe('Teste da rota de registro de usuario', () => {
       .set('Content-Type', 'application/json')
 
     expect(response.status).toEqual(400)
-    expect(response.body[0].msg).toEqual('Nao e um email valido')
+    expect(response.body[0].msg).toEqual('Nao e um email valido!')
   })
 })

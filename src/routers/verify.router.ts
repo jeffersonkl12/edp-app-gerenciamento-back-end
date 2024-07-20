@@ -9,11 +9,11 @@ router.get(
   param('userId')
     .notEmpty()
     .isUUID()
-    .withMessage('Nao podoe ser vazio ou id invalido!'),
+    .withMessage('Nao pode ser vazio ou id invalido!'),
   param('token')
     .notEmpty()
     .isJWT()
-    .withMessage('Nao pode ser vazio e deve ser token valido'),
+    .withMessage('Nao pode ser vazio ou token invalido!'),
 
   async (req, res, next) => {
     const { userId, token } = matchedData(req)

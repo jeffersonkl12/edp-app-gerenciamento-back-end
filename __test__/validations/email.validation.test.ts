@@ -16,7 +16,7 @@ describe('Testando validacao de email', () => {
     expect(validEmailCliente(emailTest)).toEqual(false)
   })
   test('Teste dominio de email - valido', () => {
-    const emailTest = 'jeffersonkl99@gmail.com'
+    const emailTest = 'jeffersonkl99@Edp.com.br'
 
     expect(validEmailDominio(emailTest)).toEqual(true)
   })

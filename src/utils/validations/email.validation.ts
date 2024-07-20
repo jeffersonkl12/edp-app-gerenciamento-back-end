@@ -1,5 +1,5 @@
 const emailRegx = /.*@[a-zA-Z0-9]\.*/
-const emailDominioRegx = /.*@gmail.com$/
+const emailDominioRegx = /.*@Edp.com.br$/
 
 export function validEmailCliente(email: string) {
   return emailRegx.test(email)
