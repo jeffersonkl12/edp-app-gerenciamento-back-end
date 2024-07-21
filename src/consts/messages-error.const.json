@@ -1,0 +1,13 @@
+{
+  "vazio": "Nao pode ser vazio!",
+  "email": {
+    "invalido": "Deve ser um email valido!",
+    "dominio": "Deve conter um dominio de email correto!"
+  },
+  "password": {
+    "invalido": "O tipo de id e invalido!",
+    "tamanho": "A senha deve ter entre 6 a 8 digitos!"
+  },
+  "token": "Deve se rum token valido!",
+  "campoInvalido": "O valor fornecido para o campo(s) nao e valido!"
+}

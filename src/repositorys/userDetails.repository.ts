@@ -1,3 +1,4 @@
+import { Prisma as PrismaConfig } from '@prisma/client'
 import prisma from '../databases/configs/prisma.config'
 import userDetailsBaseDTO from '../dtos/userDetails/userDetailsBase.dto'
 import { v7 as uuidv7 } from 'uuid'

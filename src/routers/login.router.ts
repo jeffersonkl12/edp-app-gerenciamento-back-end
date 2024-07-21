@@ -1,7 +1,9 @@
 import express from 'express'
-import { query, matchedData } from 'express-validator'
+import { query, matchedData, validationResult } from 'express-validator'
 import { login } from '../services/login.service'
 import { validEmailDominio } from '../utils/validations/email.validation'
+import * as ErrorsMessages from '../consts/messages-error.const.json'
+import ErrorFieldInvalid from '../errors/error-field-invalid'
 
 const router = express.Router()
 
@@ -9,22 +11,27 @@ router.get(
   '/',
   query('email')
     .isEmail()
-    .withMessage('Deve ser um email valido!')
+    .withMessage(ErrorsMessages.email.invalido)
     .custom((email: string) => {
       if (validEmailDominio(email)) {
         return true
       }
 
-      throw new Error('Email com dominio invalido!')
+      throw new Error(ErrorsMessages.email.dominio)
     }),
   query('password')
     .isLength({ min: 6, max: 8 })
-    .withMessage('Deve ter no minimo 6 e maximo 8 digitos!'),
+    .withMessage(ErrorsMessages.password.tamanho),
   async (req, res, next) => {
     const { email, password } = matchedData(req)
     try {
-      const response = await login(email, password)
-      return res.json(response)
+      const results = validationResult(req)
+      if (results.isEmpty()) {
+        const response = await login(email, password)
+        return res.json(response)
+      }
+
+      throw new ErrorFieldInvalid(ErrorsMessages.campoInvalido, results.array())
     } catch (err) {
       next(err)
     }

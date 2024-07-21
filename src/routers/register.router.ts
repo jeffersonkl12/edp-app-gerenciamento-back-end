@@ -3,41 +3,42 @@ import { body, matchedData, validationResult } from 'express-validator'
 import { UserCredential } from '../interfaces/global.interfaces'
 import { registerUser } from '../services/register.service'
 import { validEmailDominio } from '../utils/validations/email.validation'
+import * as ErrorsMessages from '../consts/messages-error.const.json'
+import ErrorFieldInvalid from '../errors/error-field-invalid'
 
 const router = express.Router()
 
 router.post(
   '/',
-  body().notEmpty().withMessage('Nao pode ser vazio!'),
+  body().notEmpty().withMessage(ErrorsMessages.vazio),
   body('email')
     .isEmail()
-    .withMessage('Deve ser um email valido!')
+    .withMessage(ErrorsMessages.email.invalido)
     .custom((email: string) => {
       if (validEmailDominio(email)) {
         return true
       }
 
-      throw new Error('Email com dominio invalido!')
+      throw new Error(ErrorsMessages.email.dominio)
     }),
   body('password')
     .isLength({ max: 8, min: 6 })
-    .withMessage('Deve ter no minimo 6 e maximo 8 digitos!'),
+    .withMessage(ErrorsMessages.password.tamanho),
   async (req, res, next) => {
     const userCredential: UserCredential = matchedData(req)
 
     const result = validationResult(req)
 
-    if (result.isEmpty()) {
-      try {
+    try {
+      if (result.isEmpty()) {
         const response = await registerUser(userCredential)
 
         return res.status(201).json('Cadastro realizado com sucesso!')
-      } catch (err) {
-        next(err)
       }
+      throw new ErrorFieldInvalid(ErrorsMessages.campoInvalido, result.array())
+    } catch (err) {
+      next(err)
     }
-
-    return res.status(400).json(result.array())
   },
 )
 
