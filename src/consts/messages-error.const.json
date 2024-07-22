@@ -8,6 +8,6 @@
     "invalido": "O tipo de id e invalido!",
     "tamanho": "A senha deve ter entre 6 a 8 digitos!"
   },
-  "token": "Deve se rum token valido!",
+  "token": "Deve ser rum token valido!",
   "campoInvalido": "O valor fornecido para o campo(s) nao e valido!"
 }

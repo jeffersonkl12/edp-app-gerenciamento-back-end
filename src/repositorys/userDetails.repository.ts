@@ -29,6 +29,14 @@ export async function findUserDetailsById(id: string) {
   })
 }
 
+export async function findByEmail(email: string) {
+  return await prisma.userDetails.findUnique({
+    where: {
+      email: email,
+    },
+  })
+}
+
 export async function findByEmailAndPassword(email: string, password: string) {
   return await prisma.userDetails.findUniqueOrThrow({
     where: {

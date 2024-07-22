@@ -28,7 +28,7 @@ export async function verifyActivateAccout(userId: string, token: string) {
         userDetails.status === TYPESTATUSUSER.DISABLED.toString()
       ) {
         userDetails.status = TYPESTATUSUSER.ACTIVATE.toString()
-        return userDetailsRepository.save(userDetails)
+        return await userDetailsRepository.save(userDetails)
       }
     }
   } catch (err) {

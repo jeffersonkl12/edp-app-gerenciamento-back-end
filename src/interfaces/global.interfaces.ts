@@ -17,15 +17,17 @@ export interface JWTBody extends JwtPayload {
 export interface JWTConfig extends SignOptions {}
 
 export enum TYPETOKEN {
-  ACTIVATION,
-  AUTHENTICATION,
-  RESETTOKEN,
-  REFRESH,
+  ACTIVATION = 'ACTIVATION',
+  AUTHENTICATION = 'AUTHENTICATION',
+  RESETTOKEN = 'RESETTOKEN',
+  REFRESH = 'REFRESH',
+  RECOVERY = 'RECOVERY',
+  RESETPASSWORD = 'RESETPASSWORD',
 }
 
 export enum TYPESTATUSUSER {
-  DISABLED,
-  ACTIVATE,
+  DISABLED = 'DISABLED',
+  ACTIVATE = 'ACTIVATE',
 }
 
 export interface ResponseUserCredential {

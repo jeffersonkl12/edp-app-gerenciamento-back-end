@@ -32,7 +32,6 @@ export async function sendEmail({
       from: HOST,
       to: destinatario,
       subject: titulo,
-      text: conteudo,
       html: html,
     })
     return info
