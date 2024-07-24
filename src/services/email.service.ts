@@ -2,6 +2,8 @@ import nodemailer from 'nodemailer'
 import fs from 'fs'
 import * as dotenv from 'dotenv'
 import path from 'path'
+import ejs from 'ejs'
+import { readToParsherFile } from '../utils/fs.utils'
 
 dotenv.config()
 
@@ -24,15 +26,27 @@ export async function sendEmail({
   const transport = createTtransport()
 
   try {
-    const html = fs.readFileSync(
-      path.resolve(__dirname, '../../public/index.email.html'),
+    const templatePath = path.join(
+      __dirname,
+      '../../public/index.email.template.ejs',
     )
+
+    const template = fs.readFileSync(templatePath, 'utf-8')
+
+    const html = ejs.render(template, { conteudo })
 
     const info = await transport.sendMail({
       from: HOST,
       to: destinatario,
       subject: titulo,
       html: html,
+      attachments: [
+        {
+          filename: 'EDP-Logo-white.png',
+          path: path.join(__dirname, '../../public/imgs/EDP-Logo-white.png'),
+          cid: 'logo',
+        },
+      ],
     })
     return info
   } catch (error) {

@@ -4,7 +4,7 @@ class UserDetailsRegisterDTO {
   password: string
 
   constructor(email: string, password: string, nome?: string) {
-    this.nome = this.nome
+    this.nome = nome
     this.email = email
     this.password = password
   }

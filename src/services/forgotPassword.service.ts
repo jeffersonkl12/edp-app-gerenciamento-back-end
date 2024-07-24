@@ -1,11 +1,18 @@
+import path from 'path'
 import { TYPETOKEN } from '../interfaces/global.interfaces'
 import {
   existByEmail,
   findByEmail,
   save,
+  update,
 } from '../repositorys/userDetails.repository'
+import { generatePIN } from '../utils/genereate-pin.utils'
+import { hash } from '../utils/has.utils'
 import { sendEmail } from './email.service'
 import { createToken, getFieldToToken, verifyToken } from './token.service'
+import { readFileSync } from 'fs'
+import ejs from 'ejs'
+import redisClient from '../databases/configs/redis.config'
 
 const LINK_RECOVERY =
   process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : ''
@@ -16,56 +23,85 @@ export async function forgotPassword(email: string) {
     if (!userDetails) {
       throw new Error('Usuario inexistente!')
     }
-    const tokenRecoveryPassword = createToken(
-      {
-        email: email,
-        type: TYPETOKEN.RECOVERY,
-      },
-      {
-        subject: 'recovery_password',
-        audience: userDetails!.id,
-        expiresIn: '1d',
-      },
-    )
 
-    const conteudo = String.raw`
-            <p>Clique no link abaixo para recuperar sua conta!</p>
-            <p>${LINK_RECOVERY}/api/forget-password/${tokenRecoveryPassword}</p>
-        `
+    const codePIN = generatePIN(4)
+
+    await redisClient.SET(codePIN, email, { EX: 60 * 60 * 24 })
+
+    const templatePath = path.join(
+      __dirname,
+      '../../public/templates/forget-password.email.ejs',
+    )
+    const template = readFileSync(templatePath, 'utf-8')
+
+    const html = ejs.render(template, { codePIN })
 
     await sendEmail({
       destinatario: userDetails!.email,
       titulo: 'Recuperação de senha',
-      conteudo: conteudo,
+      conteudo: html,
     })
   } catch (err) {
     throw err
   }
 }
 
+export async function verifyCodePin(codePIN: string) {
+  try {
+    const emailCliente = await redisClient.get(codePIN)
+
+    if (emailCliente) {
+      const userDetails = await findByEmail(emailCliente)
+
+      if (userDetails) {
+        await redisClient.del(codePIN)
+
+        const tokenResetPassword = createToken(
+          { email: userDetails.email, type: TYPETOKEN.RESETPASSWORD },
+          {
+            audience: userDetails.id,
+            subject: 'reset_password',
+            expiresIn: '60m',
+          },
+        )
+
+        return {
+          tokenResetPassword: tokenResetPassword,
+        }
+      }
+    }
+
+    throw new Error('Codigo PIN invalido!')
+  } catch (err) {
+    throw err
+  }
+}
+
 export async function resetPassword(
-  tokenRecoveryPassword: string,
+  tokenResetPassword: string,
   password: string,
 ) {
   try {
-    const typeToken = getFieldToToken(tokenRecoveryPassword, 'type')
+    verifyToken(tokenResetPassword)
 
-    const email = getFieldToToken(tokenRecoveryPassword, 'email')
+    const typeToken = getFieldToToken(tokenResetPassword, 'type')
+
+    const email = getFieldToToken(tokenResetPassword, 'email')
 
     if (typeof email === 'string' && typeof typeToken === 'string') {
-      if (typeToken !== TYPETOKEN.RECOVERY) {
+      if (typeToken !== TYPETOKEN.RESETPASSWORD) {
         throw new Error('Token do tipo errado!')
       }
 
       const userDetails = await findByEmail(email)
 
       if (!userDetails) {
-        throw new Error('Usario inexistente!')
+        throw new Error('Usuario inexistente!')
       }
 
-      userDetails.password = password
+      userDetails.password = hash(password)
 
-      await save(userDetails)
+      await update(userDetails.id, userDetails)
     } else {
       throw new Error('Token com campos invalidos!')
     }

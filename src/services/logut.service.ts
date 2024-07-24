@@ -13,7 +13,9 @@ export async function logout(tokenRefresh: string) {
       if (TYPETOKEN.REFRESH === typeToken) {
         const tokenRefreshId = getFieldToToken(tokenRefresh, 'jti')
 
-        await redisClient.sAdd('token:refresh', tokenRefreshId)
+        await redisClient.SET(tokenRefreshId as string, tokenRefresh, {
+          EX: 60 * 60 * 24,
+        })
       }
     }
   } catch (err) {

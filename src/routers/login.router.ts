@@ -1,5 +1,5 @@
 import express from 'express'
-import { query, matchedData, validationResult } from 'express-validator'
+import { query, matchedData, validationResult, body } from 'express-validator'
 import { login } from '../services/login.service'
 import { validEmailDominio } from '../utils/validations/email.validation'
 import * as ErrorsMessages from '../consts/messages-error.const.json'
@@ -7,9 +7,9 @@ import ErrorFieldInvalid from '../errors/error-field-invalid'
 
 const router = express.Router()
 
-router.get(
+router.post(
   '/',
-  query('email')
+  body('email')
     .isEmail()
     .withMessage(ErrorsMessages.email.invalido)
     .custom((email: string) => {
@@ -19,14 +19,14 @@ router.get(
 
       throw new Error(ErrorsMessages.email.dominio)
     }),
-  query('password')
+  body('password')
     .isLength({ min: 6, max: 8 })
     .withMessage(ErrorsMessages.password.tamanho),
   async (req, res, next) => {
-    const { email, password } = matchedData(req)
     try {
       const results = validationResult(req)
       if (results.isEmpty()) {
+        const { email, password } = matchedData(req)
         const response = await login(email, password)
         return res.json(response)
       }

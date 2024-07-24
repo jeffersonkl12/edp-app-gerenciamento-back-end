@@ -15,14 +15,14 @@ router.post(
     })
     .withMessage(ErrorMessage.password.tamanho),
   async (req, res, next) => {
-    const { password } = matchedData(req)
     const result = validationResult(req)
-    const token = req.headers.authorization!.split(' ')[1]
+
     try {
       if (!result.isEmpty()) {
         throw new ErrorFieldInvalid(ErrorMessage.campoInvalido, result.array())
       }
-
+      const { password } = matchedData(req)
+      const token = req.headers.authorization!.split(' ')[1]
       await resetPassword(token, password)
 
       return res.json('Password resetado com sucesso!')

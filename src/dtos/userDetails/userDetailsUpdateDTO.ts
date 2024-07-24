@@ -1,8 +1,7 @@
-class UserDetailsBaseDTO {
-  id?: string
+class UserDetailsUpdateDTO {
   nome?: string | null
-  email: string
-  password: string
+  email?: string
+  password?: string
   status?: string
   createDate?: Date
   updateDate?: Date
@@ -13,10 +12,8 @@ class UserDetailsBaseDTO {
     status?: string,
     createDate?: Date,
     updateDate?: Date,
-    id?: string,
     nome?: string,
   ) {
-    this.id = id
     this.nome = nome
     this.email = email
     this.password = password
@@ -26,4 +23,4 @@ class UserDetailsBaseDTO {
   }
 }
 
-export default UserDetailsBaseDTO
+export default UserDetailsUpdateDTO

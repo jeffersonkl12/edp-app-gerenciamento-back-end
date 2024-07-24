@@ -9,5 +9,8 @@
     "tamanho": "A senha deve ter entre 6 a 8 digitos!"
   },
   "token": "Deve ser rum token valido!",
-  "campoInvalido": "O valor fornecido para o campo(s) nao e valido!"
+  "campoInvalido": "O valor fornecido para o campo(s) nao e valido!",
+  "pin": {
+    "tamanho": "o numero pin deve ser de 4 digitos!"
+  }
 }

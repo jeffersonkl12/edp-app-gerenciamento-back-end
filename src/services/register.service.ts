@@ -10,12 +10,15 @@ import { sendEmail } from './email.service'
 import * as dotenv from 'dotenv'
 import { createToken } from './token.service'
 import { hash } from '../utils/has.utils'
+import { randomUUID } from 'crypto'
+import { URL, URLSearchParams } from 'url'
+import path from 'path'
+import { readFileSync } from 'fs'
+import ejs from 'ejs'
 
 dotenv.config()
 
-const URL_ACTIVATION =
-  process.env.LINK_ACTIVATION ||
-  'http://localhost:8080/api/v1/{{userId}}/verify/{{token}}'
+const URL_ACTIVATION = 'http://localhost:8080/api/verify'
 
 export async function registerUser(userCredential: UserCredential) {
   const { email, password, nome } = userCredential
@@ -30,6 +33,7 @@ export async function registerUser(userCredential: UserCredential) {
     hash(password),
     nome,
   )
+
   try {
     const userDetails = await save(userDetailsRegisterDTO)
 
@@ -46,20 +50,24 @@ export async function registerUser(userCredential: UserCredential) {
 
     const token = createToken(tokenBody, tokenConfig)
 
-    const url = URL_ACTIVATION.replace('{{userId}}', userDetails.id).replace(
-      '{{token}}',
-      token,
+    const url = new URL(URL_ACTIVATION)
+
+    url.searchParams.append('userId', userDetails.id)
+    url.searchParams.append('token', token)
+
+    const templatePath = path.join(
+      __dirname,
+      '../../public/templates/activate-account.email.ejs',
     )
 
-    const contentHTML = String.raw`
-    <p>Clique no seguinte link para ativar sua conta!</p>
-    <a href="${url}">${url}</a>
-  `
+    const template = readFileSync(templatePath, 'utf-8')
+
+    const html = ejs.render(template, { linkAtivacao: url })
 
     const infoEmail = await sendEmail({
       destinatario: userDetails.email,
       titulo: 'Ativação da conta edp',
-      conteudo: contentHTML,
+      conteudo: html,
     })
 
     return infoEmail.response

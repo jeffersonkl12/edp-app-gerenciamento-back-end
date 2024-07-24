@@ -1,3 +1,4 @@
+import UserDetailsInfoDTO from '../dtos/userDetails/userDetailsInfo.dto'
 import {
   JWTBody,
   ResponseUserCredential,
@@ -20,7 +21,7 @@ export async function login(email: string, password: string) {
         type: TYPETOKEN.REFRESH,
       },
       {
-        expiresIn: '1m',
+        expiresIn: '10m',
         audience: userDetails.id,
         subject: 'token_refresh',
       },
@@ -41,9 +42,14 @@ export async function login(email: string, password: string) {
         subject: 'token_authentication',
       },
     )
+    const userDetailsInfo = new UserDetailsInfoDTO(
+      userDetails.email,
+      userDetails.id,
+      userDetails.nome ? userDetails.nome : 'UKNOW',
+    )
 
     const responseUserCredential: ResponseUserCredential = {
-      userDetails: userDetails,
+      userDetails: userDetailsInfo,
       token: token,
       tokenRefresh: tokenRefresh,
     }

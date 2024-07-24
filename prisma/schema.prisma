@@ -12,7 +12,7 @@ datasource db {
 
 model UserDetails {
   id         String   @id
-  nome       String?
+  nome       String?  @default("UKNOW")
   email      String   @unique
   password   String
   status     String   @default("DISABLED")

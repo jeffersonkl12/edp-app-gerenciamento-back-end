@@ -1,5 +1,6 @@
 import { UserDetails } from '@prisma/client'
 import { JwtPayload, SignOptions } from 'jsonwebtoken'
+import UserDetailsInfoDTO from '../dtos/userDetails/userDetailsInfo.dto'
 
 export interface UserCredential {
   nome?: string
@@ -31,7 +32,7 @@ export enum TYPESTATUSUSER {
 }
 
 export interface ResponseUserCredential {
-  userDetails: UserDetails
+  userDetails: UserDetailsInfoDTO
   token: string
   tokenRefresh: string
 }

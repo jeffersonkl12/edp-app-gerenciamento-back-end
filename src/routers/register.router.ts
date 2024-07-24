@@ -11,6 +11,7 @@ const router = express.Router()
 router.post(
   '/',
   body().notEmpty().withMessage(ErrorsMessages.vazio),
+  body('nome'),
   body('email')
     .isEmail()
     .withMessage(ErrorsMessages.email.invalido)
